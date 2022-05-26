@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Persistence\Configurations\DadosClinicoConfigurations.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="CloudServices\Interfaces\" />
     <Folder Include="Persistence\Repositories\" />
   </ItemGroup>

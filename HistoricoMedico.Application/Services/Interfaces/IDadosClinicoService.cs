@@ -8,12 +8,11 @@ using System.Threading.Tasks;
 
 namespace HistoricoMedico.Application.Services.Interfaces
 {
-    public interface IUsuarioService
+    public interface IDadosClinicoService
     {
-        UsuarioUnicoViewModel BuscarUsuarioEspecifico(int id);
-        int CriarUsuario(NovoUsuarioInputModel inputModel);
-        void AtualizarUsuario(AtualizarUsuarioInputModel InputModel);
-        void DeletarUsuario(int id);
-       
+       void AtualizarDadosClinico(DadosClinicosInputModel inputModel);
+        DadosClinicoViewModel BuscarDadosClinico(int id);
+        int CadastrarDadosClinico(DadosClinicosInputModel inputModel);        
+        
     }
 }

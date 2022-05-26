@@ -4,14 +4,16 @@ using HistoricoMedico.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace HistoricoMedico.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(HistoricoMedicoDbContext))]
-    partial class HistoricoMedicoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220525180913_DadosClinico-MedicoEndereco")]
+    partial class DadosClinicoMedicoEndereco
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,6 +59,42 @@ namespace HistoricoMedico.Infrastructure.Persistence.Migrations
                     b.HasIndex("IdUsuario");
 
                     b.ToTable("Consultas");
+                });
+
+            modelBuilder.Entity("HistoricoMedico.Core.Entities.DadosClinico", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Alergia")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("Altura")
+                        .HasColumnType("real");
+
+                    b.Property<string>("Doenca")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("IdUsuario")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Medicacao")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("Peso")
+                        .HasColumnType("real");
+
+                    b.Property<string>("TipoSanguineo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdUsuario")
+                        .IsUnique();
+
+                    b.ToTable("DadosClinicos");
                 });
 
             modelBuilder.Entity("HistoricoMedico.Core.Entities.Dependente", b =>
@@ -210,6 +248,17 @@ namespace HistoricoMedico.Infrastructure.Persistence.Migrations
                     b.Navigation("Usuario");
                 });
 
+            modelBuilder.Entity("HistoricoMedico.Core.Entities.DadosClinico", b =>
+                {
+                    b.HasOne("HistoricoMedico.Core.Entities.Usuario", "Usuario")
+                        .WithOne("DadosClinico")
+                        .HasForeignKey("HistoricoMedico.Core.Entities.DadosClinico", "IdUsuario")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("HistoricoMedico.Core.Entities.Dependente", b =>
                 {
                     b.HasOne("HistoricoMedico.Core.Entities.Usuario", "Usuario")
@@ -246,6 +295,8 @@ namespace HistoricoMedico.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("HistoricoMedico.Core.Entities.Usuario", b =>
                 {
                     b.Navigation("Consultas");
+
+                    b.Navigation("DadosClinico");
 
                     b.Navigation("Dependentes");
 

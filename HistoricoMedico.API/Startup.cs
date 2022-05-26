@@ -40,6 +40,7 @@ namespace HistoricoMedico.API
             services.AddScoped<IConsultaService, ConsultaService>();
             services.AddScoped<IUsuarioService, UsuarioService>();
             services.AddScoped<IDependenteService, DependenteService>();
+            
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

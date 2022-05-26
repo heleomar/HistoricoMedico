@@ -52,7 +52,7 @@ namespace HistoricoMedico.API.Controllers
         [HttpPut("{id}")]
         public IActionResult AtualizarUsuario(int id, [FromBody] AtualizarUsuarioInputModel inputModel)
         {
-            if (inputModel.Celular > 10)
+            if (inputModel.Celular > 100)
             {
                 return BadRequest();
             }
@@ -64,27 +64,12 @@ namespace HistoricoMedico.API.Controllers
 
         //Deletar um Usuário
         [HttpDelete("{id}")]
-        public IActionResult DeletarConsulta(int id)
+        public IActionResult DeletarUsuario(int id)
         {
             _usuarioService.DeletarUsuario(id);
 
             return NoContent();
         }
-
-        //Cadastrar os Dados Clínicos 
-        [HttpPost("DadosClinicos")]
-        public IActionResult DadosClinicos([FromBody] DadosClinicosInputModel inputModel)
-        {
-            if (inputModel.Nome.Length > 150)
-            {
-                return BadRequest();
-            }
-
-            var id = _usuarioService.CriarUsuario(inputModel);
-
-            return CreatedAtAction(nameof(ObterUsuario), new { id = id }, inputModel);
-        }
-
 
     }
 }

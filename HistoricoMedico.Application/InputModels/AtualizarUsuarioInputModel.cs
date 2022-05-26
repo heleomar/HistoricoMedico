@@ -12,7 +12,7 @@ namespace HistoricoMedico.Application.InputModels
         public int Id { get; private set; }
         public string Email { get; private set; }
         public int Celular { get; private set; }
-        public Endereco Endereco { get; private set; }
+        public string Senha { get; private set; }
         
     }
 }

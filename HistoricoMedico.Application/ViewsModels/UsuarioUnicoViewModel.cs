@@ -9,14 +9,14 @@ namespace HistoricoMedico.Application.ViewsModels
 {
     public class UsuarioUnicoViewModel
     {
-        public UsuarioUnicoViewModel(string nome, string email, string sexo, int celular, DateTime dataNascimento, Endereco endereco)
+        public UsuarioUnicoViewModel(string nome, string email, string sexo, int celular, DateTime dataNascimento)
         {
             Nome = nome;
             Email = email;
             Sexo = sexo;
             Celular = celular;
             DataNascimento = dataNascimento;
-            Endereco = endereco;
+            
         }
 
         public string Nome { get; private set; }
@@ -24,7 +24,7 @@ namespace HistoricoMedico.Application.ViewsModels
         public string Sexo { get; private set; }
         public int Celular { get; private set; }
         public DateTime DataNascimento { get; private set; }
-        public Endereco Endereco { get; private set; }
+       
         
     }
 }

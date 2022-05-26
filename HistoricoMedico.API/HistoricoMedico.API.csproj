@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\DadosClinicosController.cs" />
     <Compile Remove="WeatherForecast.cs" />
   </ItemGroup>
 

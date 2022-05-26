@@ -26,9 +26,19 @@ namespace HistoricoMedico.Core.Entities
             Especialidade = especialidade;
             Telefone = telefone;
             Celular = celular;
-            Endereco = endereco;
+            Endereco = new Endereco()
+            {
+                Logradouro = endereco.Logradouro,
+                Numero = endereco.Numero,
+                Complemento = endereco.Complemento,
+                Bairro = endereco.Bairro,
+                Cidade = endereco.Cidade,
+                Estado = endereco.Estado,
+                Cep = endereco.Cep,
 
+            };
         }
+        
 
         public string Nome { get; private set; }
         public int IdUsuario { get; private set; }
@@ -46,6 +56,17 @@ namespace HistoricoMedico.Core.Entities
             Telefone = telefone;
             Celular = celular;
             
+        }
+
+        public void AtualizarEndereco(string logradouro, int numero, string bairro, string complemento, string cidade, string estado, string cep)
+        {
+            Endereco.Logradouro = logradouro;
+            Endereco.Numero = numero;
+            Endereco.Bairro = bairro;
+            Endereco.Complemento = complemento;
+            Endereco.Cidade = cidade;
+            Endereco.Estado = estado;
+            Endereco.Cep = cep;
         }
 
     }

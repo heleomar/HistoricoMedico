@@ -23,11 +23,12 @@ namespace HistoricoMedico.Application.Services.Implementations
         {
             var usuario = _dbContext.Usuarios.SingleOrDefault(u => u.Id == inputModel.Id);
 
-            usuario.Atualizar(inputModel.Email, inputModel.Celular, inputModel.Endereco);
+            usuario.Atualizar(inputModel.Email, inputModel.Celular, inputModel.Senha);
 
             _dbContext.SaveChanges();
         }
 
+      
         public UsuarioUnicoViewModel BuscarUsuarioEspecifico(int id)
         {
             var usuario = _dbContext.Usuarios.SingleOrDefault(u => u.Id == id); ;
@@ -37,8 +38,7 @@ namespace HistoricoMedico.Application.Services.Implementations
                     usuario.Email,
                     usuario.Sexo,
                     usuario.Celular,
-                    usuario.DataNascimento,
-                    usuario.Endereco
+                    usuario.DataNascimento                    
                     );
 
             return UsuarioUnicoViewModel;
@@ -55,6 +55,7 @@ namespace HistoricoMedico.Application.Services.Implementations
             return usuario.Id;
         }
 
+       
         public void DeletarUsuario(int id)
         {
             var usuario = _dbContext.Usuarios.SingleOrDefault(u => u.Id == id);

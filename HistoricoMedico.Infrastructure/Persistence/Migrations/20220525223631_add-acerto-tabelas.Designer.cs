@@ -4,14 +4,16 @@ using HistoricoMedico.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace HistoricoMedico.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(HistoricoMedicoDbContext))]
-    partial class HistoricoMedicoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220525223631_add-acerto-tabelas")]
+    partial class addacertotabelas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

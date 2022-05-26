@@ -19,7 +19,7 @@ namespace HistoricoMedico.Infrastructure.Persistence
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Medico> Medicos { get; set; }
         public DbSet<Consulta> Consultas { get; set; }
-        public DbSet<Dependente> Dependentes { get; set; }
+        public DbSet<Dependente> Dependentes { get; set; }        
 
         protected  override void OnModelCreating(ModelBuilder modelBuilder)
         {
