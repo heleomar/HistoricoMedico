@@ -12,8 +12,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\HistoricoMedico.Core\HistoricoMedico.Core.csproj" />
     <ProjectReference Include="..\HistoricoMedico.Infrastructure\HistoricoMedico.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Queries\ObterConsultas\" />
   </ItemGroup>
 
 </Project>

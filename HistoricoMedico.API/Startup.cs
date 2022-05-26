@@ -1,6 +1,8 @@
+using HistoricoMedico.Application.Commands.CriarConsulta;
 using HistoricoMedico.Application.Services.Implementations;
 using HistoricoMedico.Application.Services.Interfaces;
 using HistoricoMedico.Infrastructure.Persistence;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -43,6 +45,9 @@ namespace HistoricoMedico.API
             
 
             services.AddControllers();
+
+            services.AddMediatR(typeof(CriarConsultaCommand));
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "HistoricoMedico.API", Version = "v1" });
