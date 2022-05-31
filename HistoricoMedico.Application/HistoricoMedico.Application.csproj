@@ -6,9 +6,6 @@
 
   <ItemGroup>
     <Compile Remove="InputModels\DadosClinicosInputModel.cs" />
-    <Compile Remove="Services\Implementations\DadosClinicoService.cs" />
-    <Compile Remove="Services\Interfaces\IDadosClinicoService.cs" />
-    <Compile Remove="ViewsModels\DadosClinicoViewModel.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,10 +15,6 @@
   <ItemGroup>
     <ProjectReference Include="..\HistoricoMedico.Core\HistoricoMedico.Core.csproj" />
     <ProjectReference Include="..\HistoricoMedico.Infrastructure\HistoricoMedico.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Queries\ObterConsultas\" />
   </ItemGroup>
 
 </Project>

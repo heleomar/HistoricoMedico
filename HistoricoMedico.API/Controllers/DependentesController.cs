@@ -1,32 +1,39 @@
-﻿using HistoricoMedico.Application.InputModels;
-using HistoricoMedico.Application.Services.Interfaces;
+﻿using HistoricoMedico.Application.Commands.AtualizarDependente;
+using HistoricoMedico.Application.Commands.CriarDependente;
+using HistoricoMedico.Application.Commands.DeletarDependente;
+using HistoricoMedico.Application.Queries.ObterDependente;
+using HistoricoMedico.Application.Queries.ObterTodosDependentes;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace HistoricoMedico.API.Controllers
 {
     [Route("api/dependentes")]
     public class DependentesController : ControllerBase
     {
+        private readonly IMediator _mediator;
 
-        private readonly IDependenteService _dependenteService;
-
-        public DependentesController(IDependenteService dependenteService)
+        public DependentesController(IMediator mediator)
         {
-            _dependenteService = dependenteService;
+            _mediator = mediator;
         }
 
         [HttpGet]
-        public IActionResult ObterTodosDependentes()
+        public async Task<IActionResult> ObterTodosDependentes()
         {
-            var dependentes = _dependenteService.BuscarTodosDependentes();
+
+            var query = new ObterTodosDependentesQuery();
+            var dependentes = await _mediator.Send(query);
 
             return Ok(dependentes);
         }
 
         [HttpGet("{id}")]
-        public IActionResult ObterDependenteEspecifico(int id)
+        public async Task<IActionResult> ObterDependenteEspecifico(int id)
         {
-            var dependente = _dependenteService.BuscarDependenteEspecifico(id);
+            var query = new ObterDependenteQuery(id);
+            var dependente = await _mediator.Send(query);
 
             if (dependente == null)
             {
@@ -37,36 +44,40 @@ namespace HistoricoMedico.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult CadastrarDependente([FromBody] NovoDependenteInputModel inputModel)
+        public async Task<IActionResult> CadastrarDependente([FromBody] CriarDependenteCommand command)
         {
-            if (inputModel.Nome.Length > 150)
+            if (command.Nome.Length > 150)
             {
                 return BadRequest();
             }
 
-            var id = _dependenteService.CriarNovoDependente(inputModel);
+            //var id = _dependenteService.CriarNovoDependente(inputModel);
 
-            return CreatedAtAction(nameof(ObterDependenteEspecifico), new { id = id }, inputModel);
+            var id = await _mediator.Send(command);
+
+            return CreatedAtAction(nameof(ObterDependenteEspecifico), new { id = id }, command);
         }
 
         [HttpPut("{id}")]
-        public IActionResult AtualizarDependente(int id, [FromBody] AtualizarDependenteInputModel inputModel)
+        public async Task<IActionResult> AtualizarDependente(int id, [FromBody] AtualizarDependenteCommand command)
         {
-            if (inputModel.Nome.Length > 150)
+            if (command.Nome.Length > 150)
             {
                 return BadRequest();
             }
 
-            _dependenteService.AtualizarDependente(inputModel);
+            await  _mediator.Send(command);
 
             return NoContent();
         }
 
         //Deletar um Médico
         [HttpDelete("{id}")]
-        public IActionResult DeletarDependente(int id)
+        public async Task<IActionResult> DeletarDependente(int id)
         {
-            _dependenteService.DeletarDependente(id);
+            var command = new DeletarDependenteCommand(id);
+
+            await _mediator.Send(command);
 
             return NoContent();
         }

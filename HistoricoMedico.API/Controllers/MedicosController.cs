@@ -1,9 +1,10 @@
-﻿using HistoricoMedico.Application.InputModels;
-using HistoricoMedico.Application.Services.Interfaces;
+﻿using HistoricoMedico.Application.Commands.AtualizarMedico;
+using HistoricoMedico.Application.Commands.CriarMedico;
+using HistoricoMedico.Application.Commands.DeletarMedico;
+using HistoricoMedico.Application.Queries.ObterMedico;
+using HistoricoMedico.Application.Queries.ObterTodosMedicos;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 
@@ -12,26 +13,28 @@ namespace HistoricoMedico.API.Controllers
     [Route("api/medicos")]
     public class MedicosController : ControllerBase
     {
-        private readonly IMedicoService _medicoService;
-        public MedicosController(IMedicoService medicoService)
+        private readonly IMediator _mediator;
+        public MedicosController(IMediator mediator)
         {
-            _medicoService = medicoService;
+            _mediator = mediator;
         }
 
         //Busca todos Médicos 
         [HttpGet]
-        public IActionResult ObterTodosMedicos()
+        public async Task<IActionResult> ObterTodosMedicos()
         {
-            var medicos = _medicoService.BuscarTodosMedicos();
+            var query = new ObterTodosMedicosQuery();
+            var medicos = await _mediator.Send(query);
 
             return Ok(medicos);
         }
 
         //Busca uma médico específico
         [HttpGet("{id}")]
-        public IActionResult ObterMedicoEspecifico(int id)
+        public async Task<IActionResult> ObterMedicoEspecifico(int id)
         {
-            var medico = _medicoService.BuscarMedicoEspecifico(id);
+            var query = new ObterMedicoQuery(id);
+            var medico = await _mediator.Send(query);
 
             if (medico == null)
             {
@@ -44,37 +47,39 @@ namespace HistoricoMedico.API.Controllers
 
         //Cadastrar um Médico
         [HttpPost]
-        public IActionResult CadastrarMedico([FromBody] NovoMedicoInputModel inputModel)
+        public async Task<IActionResult> CadastrarMedico([FromBody] CriarMedicoCommand command)
         {
-            if (inputModel.Nome.Length > 250)
+            if (command.Nome.Length > 250)
             {
                 return BadRequest();
             }
 
-            var id = _medicoService.CriarNovoMedico(inputModel);
+            var id = await _mediator.Send(command);
 
-            return CreatedAtAction(nameof(ObterMedicoEspecifico), new { id = id }, inputModel);
+            return CreatedAtAction(nameof(ObterMedicoEspecifico), new { id = id }, command);
         }
 
         //Atualizar um Médico
         [HttpPut("{id}")]
-        public IActionResult AtualizarMedico(int id, [FromBody] AtualizarMedicoInputModel inputModel)
+        public async Task<IActionResult> AtualizarMedico(int id, [FromBody] AtualizarMedicoCommand command)
         {
-            if (inputModel.Especialidade.Length > 200)
+            if (command.Especialidade.Length > 200)
             {
                 return BadRequest();
             }
 
-            _medicoService.AtualizarMedico(inputModel);
+            await _mediator.Send(command);
 
             return NoContent();
         }
 
         //Deletar um Médico
         [HttpDelete("{id}")]
-        public IActionResult DeletarMedico(int id)
+        public async Task<IActionResult> DeletarMedico(int id)
         {
-            _medicoService.DeletarMedico(id);
+            var command = new DeletarMedicoCommand(id);
+
+            await _mediator.Send(command);
 
             return NoContent();
         }

@@ -1,9 +1,11 @@
-﻿using HistoricoMedico.Application.InputModels;
-using HistoricoMedico.Application.Services.Interfaces;
+﻿using HistoricoMedico.Application.Commands.AtualizarConsulta;
+using HistoricoMedico.Application.Commands.CriarConsulta;
+using HistoricoMedico.Application.Commands.DeletarConsulta;
+using HistoricoMedico.Application.Queries.ObterConsulta;
+using HistoricoMedico.Application.Queries.ObterTodasConsultas;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace HistoricoMedico.API.Controllers
@@ -11,26 +13,28 @@ namespace HistoricoMedico.API.Controllers
     [Route("api/consultas")]
     public class ConsultasController : ControllerBase
     {
-        private readonly IConsultaService _consultaService;
-        public ConsultasController(IConsultaService consultaService)
+        private readonly IMediator _mediator;
+        public ConsultasController(IMediator mediator)
         {
-            _consultaService = consultaService;
+            _mediator = mediator;
         }
 
         //Busca todas as consultas
         [HttpGet]
-        public IActionResult ObterTodasConsultas()
+        public async Task<IActionResult> ObterTodasConsultas()
         {
-            var consultas = _consultaService.BuscarTodasConsultas();
+            var query = new ObterTodasConsultasQuery();
+            var consultas = await _mediator.Send(query);
 
             return Ok(consultas);
         }
 
         //Busca uma consulta especfica de um determinado médico 
         [HttpGet("{id}")]
-        public IActionResult ObterConsultaEspecifica(int id)
+        public async Task<IActionResult> ObterConsultaEspecifica(int id)
         {
-            var consulta = _consultaService.BuscarConsultaEspecifica(id);
+            var query = new ObterConsultaQuery(id);
+            var consulta = await _mediator.Send(query);
 
             if (consulta == null)
             {
@@ -42,38 +46,40 @@ namespace HistoricoMedico.API.Controllers
 
         //Cadastrar uma Consulta 
         [HttpPost]
-        public IActionResult CadastrarConsulta([FromBody] NovaConsultaInputModel inputModel)
+        public async Task<IActionResult> CadastrarConsulta([FromBody] CriarConsultaCommand  command)
         {
-            if (inputModel.DataConsulta < DateTime.Now)
+            if (command.DataConsulta < DateTime.Now)
             {
                 return BadRequest();
             }
 
-            var id = _consultaService.CriarNovaConsulta(inputModel);
+            var id = await _mediator.Send(command);
 
-            return CreatedAtAction(nameof(ObterConsultaEspecifica), new { id = id }, inputModel);
+            return CreatedAtAction(nameof(ObterConsultaEspecifica), new { id = id }, command);
         }
 
 
         //Atualizar uma Consulta
         [HttpPut("{id}")]
-        public IActionResult AtualizarConsulta(int id, [FromBody] AtualizarConsultaInputModel inputModel)
+        public async Task<IActionResult> AtualizarConsulta(int id, [FromBody] AtualizarConsultaCommand command)
         {
-            if (inputModel.PrescricaoMedica.Length > 600)
+            if (command.PrescricaoMedica.Length > 600)
             {
                 return BadRequest();
             }
 
-            _consultaService.AtulizarConsulta(inputModel);
+            await _mediator.Send(command);
 
             return NoContent();
         }
 
         //Deletar uma consulta
         [HttpDelete("{id}")]
-        public IActionResult DeletarConsulta(int id)
+        public async Task<IActionResult> DeletarConsulta(int id)
         {
-            _consultaService.DeletarConsulta(id);
+            var command = new DeletarConsultaCommand(id);
+
+            await _mediator.Send(command);
 
             return NoContent();
         } 

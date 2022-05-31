@@ -1,22 +1,13 @@
 using HistoricoMedico.Application.Commands.CriarConsulta;
-using HistoricoMedico.Application.Services.Implementations;
-using HistoricoMedico.Application.Services.Interfaces;
 using HistoricoMedico.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace HistoricoMedico.API
 {
@@ -38,10 +29,6 @@ namespace HistoricoMedico.API
 
             //services.AddSingleton<HistoricoMedicoDbContext>();
 
-            services.AddScoped<IMedicoService, MedicoService>();
-            services.AddScoped<IConsultaService, ConsultaService>();
-            services.AddScoped<IUsuarioService, UsuarioService>();
-            services.AddScoped<IDependenteService, DependenteService>();
             
 
             services.AddControllers();

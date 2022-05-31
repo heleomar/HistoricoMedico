@@ -1,9 +1,9 @@
-﻿using HistoricoMedico.Application.InputModels;
-using HistoricoMedico.Application.Services.Interfaces;
+﻿using HistoricoMedico.Application.Commands.AtualizarUsuario;
+using HistoricoMedico.Application.Commands.CriarUsuario;
+using HistoricoMedico.Application.Commands.DeletarUsuario;
+using HistoricoMedico.Application.Queries.ObterUsuario;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace HistoricoMedico.API.Controllers
@@ -11,19 +11,20 @@ namespace HistoricoMedico.API.Controllers
     [Route("api/usuarios")]
     public class UsuariosController : ControllerBase
     {
+        private readonly IMediator _mediator;
 
-        private readonly IUsuarioService _usuarioService;
-        public UsuariosController(IUsuarioService usuarioService)
+        public UsuariosController(IMediator mediator)
         {
-            _usuarioService = usuarioService;
+            _mediator = mediator;
         }
 
 
         // Buscar Usuário específico
         [HttpGet("{id}")]
-        public IActionResult ObterUsuario(int id)
+        public async Task<IActionResult> ObterUsuario(int id)
         {
-            var usuario = _usuarioService.BuscarUsuarioEspecifico(id);
+            var query = new ObterUsuarioQuery(id);
+            var usuario = await _mediator.Send(query);
 
             if (usuario == null)
             {
@@ -36,37 +37,39 @@ namespace HistoricoMedico.API.Controllers
 
         //Cadastrar um Usuário
         [HttpPost]
-        public IActionResult CadastrarUsuario([FromBody] NovoUsuarioInputModel inputModel)
+        public async Task<IActionResult> CadastrarUsuario([FromBody] CriarUsuarioCommand command)
         {
-            if (inputModel.Nome.Length > 150 || inputModel.Senha.Length < 5)
+            if (command.Nome.Length > 150 || command.Senha.Length < 5)
             {
                 return BadRequest();
             }
 
-            var id = _usuarioService.CriarUsuario(inputModel);
+            var id = await _mediator.Send(command);
 
-            return CreatedAtAction(nameof(ObterUsuario), new { id = id }, inputModel);
+            return CreatedAtAction(nameof(ObterUsuario), new { id = id }, command);
         }
 
         //Atualizar um Usuário
         [HttpPut("{id}")]
-        public IActionResult AtualizarUsuario(int id, [FromBody] AtualizarUsuarioInputModel inputModel)
+        public async Task<IActionResult> AtualizarUsuario(int id, [FromBody] AtualizarUsuarioCommand command)
         {
-            if (inputModel.Celular > 100)
+            if (command.Celular > 100)
             {
                 return BadRequest();
             }
 
-            _usuarioService.AtualizarUsuario(inputModel);
+            await _mediator.Send(command);
 
             return NoContent();
         }
 
         //Deletar um Usuário
         [HttpDelete("{id}")]
-        public IActionResult DeletarUsuario(int id)
+        public async Task<IActionResult> DeletarUsuario(int id)
         {
-            _usuarioService.DeletarUsuario(id);
+            var command = new DeletarUsuarioCommand(id);
+
+            await  _mediator.Send(command);
 
             return NoContent();
         }
