@@ -1,4 +1,5 @@
-﻿using HistoricoMedico.Infrastructure.Persistence;
+﻿using HistoricoMedico.Core.Repositories;
+using HistoricoMedico.Infrastructure.Persistence;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -11,19 +12,17 @@ namespace HistoricoMedico.Application.Commands.DeletarDependente
 {
     public class DeletarDependenteCommandHandler : IRequestHandler<DeletarDependenteCommand, Unit>
     {
-        private readonly HistoricoMedicoDbContext _dbContext;
-        public DeletarDependenteCommandHandler(HistoricoMedicoDbContext dbContext)
+        private readonly IDependenteRepository _dependenteRepository;
+        public DeletarDependenteCommandHandler(IDependenteRepository dependenteRepository)
         {
-            _dbContext = dbContext;
+            _dependenteRepository = dependenteRepository;
         }
 
         public async Task<Unit> Handle(DeletarDependenteCommand request, CancellationToken cancellationToken)
         {
-            var dependente = _dbContext.Dependentes.SingleOrDefault(d => d.Id == request.Id);
+            var dependente = await _dependenteRepository.ObterUmDependente(request.Id);
 
-            _dbContext.Dependentes.Remove(dependente);
-
-            await _dbContext.SaveChangesAsync();
+            await _dependenteRepository.Deletar(dependente);
 
             return Unit.Value;
         }

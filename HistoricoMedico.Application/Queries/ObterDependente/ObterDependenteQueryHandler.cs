@@ -1,4 +1,5 @@
-﻿using HistoricoMedico.Infrastructure.Persistence;
+﻿using HistoricoMedico.Core.Repositories;
+using HistoricoMedico.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
@@ -9,19 +10,15 @@ namespace HistoricoMedico.Application.Queries.ObterDependente
     public class ObterDependenteQueryHandler : IRequestHandler<ObterDependenteQuery, DependenteUnicoViewModel>
     {
 
-        private readonly HistoricoMedicoDbContext _dbContext;
-        public ObterDependenteQueryHandler(HistoricoMedicoDbContext dbContext)
+        private readonly IDependenteRepository _dependenteRepository;
+        public ObterDependenteQueryHandler(IDependenteRepository dependenteRepository)
         {
-            _dbContext = dbContext;
+            _dependenteRepository = dependenteRepository;
         }
 
         public async Task<DependenteUnicoViewModel> Handle(ObterDependenteQuery request, CancellationToken cancellationToken)
         {
-            var dependente = await _dbContext.Dependentes
-                .Include(d => d.Usuario)
-                .SingleOrDefaultAsync(d => d.Id == request.Id);
-
-            if (dependente == null) return null; //só para evitar excessão Camada API - Parte 2 / 05:15
+            var dependente = await _dependenteRepository.ObterUmDependente(request.Id);
 
             var dependenteUnicoViewModel = new DependenteUnicoViewModel(
                 dependente.Id,

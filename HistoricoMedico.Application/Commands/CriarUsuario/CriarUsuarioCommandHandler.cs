@@ -1,4 +1,5 @@
 ﻿using HistoricoMedico.Core.Entities;
+using HistoricoMedico.Core.Repositories;
 using HistoricoMedico.Infrastructure.Persistence;
 using MediatR;
 using System;
@@ -13,19 +14,17 @@ namespace HistoricoMedico.Application.Commands.CriarUsuario
     public class CriarUsuarioCommandHandler : IRequestHandler<CriarUsuarioCommand, int>
     {
 
-        private readonly HistoricoMedicoDbContext _dbContext;
-        public CriarUsuarioCommandHandler(HistoricoMedicoDbContext dbContext)
+        private readonly IUsuarioRepository _usuarioRepository;
+        public CriarUsuarioCommandHandler(IUsuarioRepository usuarioRepository)
         {
-            _dbContext = dbContext;
+            _usuarioRepository = usuarioRepository;
         }
 
         public async Task<int> Handle(CriarUsuarioCommand request, CancellationToken cancellationToken)
         {
             var usuario = new Usuario(request.Nome, request.Email, request.Senha);
 
-            await _dbContext.Usuarios.AddAsync(usuario);
-
-            await _dbContext.SaveChangesAsync();
+            await _usuarioRepository.Criar(usuario);
 
             return usuario.Id;
         }

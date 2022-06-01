@@ -1,4 +1,5 @@
-﻿using HistoricoMedico.Infrastructure.Persistence;
+﻿using HistoricoMedico.Core.Repositories;
+using HistoricoMedico.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -11,18 +12,19 @@ namespace HistoricoMedico.Application.Queries.ObterTodosMedicos
     public class ObterTodosMedicosQueryHandler : IRequestHandler<ObterTodosMedicosQuery, List<MedicoViewModel>>
     {
 
-        private readonly HistoricoMedicoDbContext _dbContext;
-        public ObterTodosMedicosQueryHandler(HistoricoMedicoDbContext dbContext)
+        private readonly IMedicoRepository _medicoRepository;
+        public ObterTodosMedicosQueryHandler(IMedicoRepository medicoRepository)
         {
-            _dbContext = dbContext;
+            _medicoRepository = medicoRepository;
         }
 
         public async Task<List<MedicoViewModel>> Handle(ObterTodosMedicosQuery request, CancellationToken cancellationToken)
         {
-            var medicos = _dbContext.Medicos;
-            var medicosViewModel = await medicos
+            var medicos = await _medicoRepository.ObterTodos();
+
+            var medicosViewModel =  medicos
                 .Select(m => new MedicoViewModel(m.Id, m.Nome, m.Especialidade))
-                .ToListAsync();
+                .ToList();
 
             return medicosViewModel;
         }

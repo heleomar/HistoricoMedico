@@ -1,4 +1,5 @@
-﻿using HistoricoMedico.Infrastructure.Persistence;
+﻿using HistoricoMedico.Core.Repositories;
+using HistoricoMedico.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
@@ -8,19 +9,15 @@ namespace HistoricoMedico.Application.Queries.ObterConsulta
 {
     public class ObterConsultaQueryHandler : IRequestHandler<ObterConsultaQuery, ConsultaUnicaViewModel>
     {
-
-        private readonly HistoricoMedicoDbContext _dbContext;
-        public ObterConsultaQueryHandler(HistoricoMedicoDbContext dbContext)
+        private readonly IConsultaRepository _consultaRepository;
+        public ObterConsultaQueryHandler(IConsultaRepository consultaRepository)
         {
-            _dbContext = dbContext;
+            _consultaRepository = consultaRepository;
         }
 
         public async Task<ConsultaUnicaViewModel> Handle(ObterConsultaQuery request, CancellationToken cancellationToken)
         {
-            var consulta = await _dbContext.Consultas
-                 .Include(c => c.Usuario)
-                 .Include(c => c.Medico)
-                 .SingleOrDefaultAsync(c => c.Id == request.Id); ;
+            var consulta = await _consultaRepository.ObterUmaConsulta(request.Id);
 
             var consultaUnicaViewModel = new ConsultaUnicaViewModel(
                     consulta.Id,

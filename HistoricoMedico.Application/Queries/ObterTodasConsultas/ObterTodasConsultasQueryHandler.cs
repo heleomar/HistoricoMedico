@@ -1,4 +1,5 @@
-﻿using HistoricoMedico.Infrastructure.Persistence;
+﻿using HistoricoMedico.Core.Repositories;
+using HistoricoMedico.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -11,19 +12,20 @@ namespace HistoricoMedico.Application.Queries.ObterTodasConsultas
     public class ObterTodasConsultasQueryHandler : IRequestHandler<ObterTodasConsultasQuery, List<ConsultaViewModel>>
     {
 
-        private readonly HistoricoMedicoDbContext _dbContext;
-        public ObterTodasConsultasQueryHandler(HistoricoMedicoDbContext dbContext)
+        private readonly IConsultaRepository _consultaRepository;
+        public ObterTodasConsultasQueryHandler(IConsultaRepository consultaRepository)
         {
-            _dbContext = dbContext;
+            _consultaRepository = consultaRepository;
         }
 
 
         public async Task<List<ConsultaViewModel>> Handle(ObterTodasConsultasQuery request, CancellationToken cancellationToken)
         {
-            var consultas =  _dbContext.Consultas;
-            var consultasViewModel = await consultas
+            var consultas = await _consultaRepository.ObterTodas();
+
+            var consultasViewModel = consultas
                 .Select(c => new ConsultaViewModel(c.Id, c.DataConsulta))
-                .ToListAsync();
+                .ToList();
 
             return consultasViewModel;
         }

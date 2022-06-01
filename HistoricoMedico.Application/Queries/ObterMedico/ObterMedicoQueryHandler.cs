@@ -1,4 +1,5 @@
-﻿using HistoricoMedico.Infrastructure.Persistence;
+﻿using HistoricoMedico.Core.Repositories;
+using HistoricoMedico.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
@@ -8,20 +9,17 @@ namespace HistoricoMedico.Application.Queries.ObterMedico
 {
     public class ObterMedicoQueryHandler : IRequestHandler<ObterMedicoQuery, MedicoUnicoViewModel>
     {
-        private readonly HistoricoMedicoDbContext _dbContext;
-
-        public ObterMedicoQueryHandler(HistoricoMedicoDbContext dbContext)
+        private readonly IMedicoRepository _medicoRepository;
+        public ObterMedicoQueryHandler(IMedicoRepository medicoRepository)
         {
-            _dbContext = dbContext;
+            _medicoRepository = medicoRepository;
         }
 
 
         public async Task<MedicoUnicoViewModel> Handle(ObterMedicoQuery request, CancellationToken cancellationToken)
         {
 
-            var medico = await _dbContext.Medicos
-                .Include(m => m.Usuario)
-                .SingleOrDefaultAsync(m => m.Id == request.Id);
+            var medico = await _medicoRepository.ObterUmMedico(request.Id);
 
             if (medico == null) return null; //só para evitar excessão Camada API - Parte 2 / 05:15
 

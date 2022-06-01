@@ -1,10 +1,6 @@
 ﻿using HistoricoMedico.Core.Entities;
-using HistoricoMedico.Infrastructure.Persistence;
+using HistoricoMedico.Core.Repositories;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,19 +8,17 @@ namespace HistoricoMedico.Application.Commands.CriarConsulta
 {
     public class CriarConsultaCommandHandler : IRequestHandler<CriarConsultaCommand, int>
     {
-        private readonly HistoricoMedicoDbContext _dbContext;
-        public CriarConsultaCommandHandler(HistoricoMedicoDbContext dbContext)
+        private readonly IConsultaRepository _consultaRepository;
+        public CriarConsultaCommandHandler(IConsultaRepository consultaRepository)
         {
-            _dbContext = dbContext;
+            _consultaRepository = consultaRepository;
         }
 
         public async Task<int> Handle(CriarConsultaCommand request, CancellationToken cancellationToken)
         {
             var consulta = new Consulta(request.IdUsuario, request.IdMedico, request.Sintomas, request.DataConsulta);
 
-            await _dbContext.Consultas.AddAsync(consulta);
-
-            await _dbContext.SaveChangesAsync();
+            await _consultaRepository.Criar(consulta);
 
             return consulta.Id;
         }

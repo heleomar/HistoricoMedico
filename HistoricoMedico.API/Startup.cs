@@ -1,5 +1,7 @@
 using HistoricoMedico.Application.Commands.CriarConsulta;
+using HistoricoMedico.Core.Repositories;
 using HistoricoMedico.Infrastructure.Persistence;
+using HistoricoMedico.Infrastructure.Persistence.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,7 +31,10 @@ namespace HistoricoMedico.API
 
             //services.AddSingleton<HistoricoMedicoDbContext>();
 
-            
+            services.AddScoped<IConsultaRepository, ConsultaRepository>();
+            services.AddScoped<IMedicoRepository, MedicoRepository>();
+            services.AddScoped<IDependenteRepository, DependenteRepository>();
+            services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
             services.AddControllers();
 

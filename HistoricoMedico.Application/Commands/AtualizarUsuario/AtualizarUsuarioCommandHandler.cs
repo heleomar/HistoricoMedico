@@ -1,4 +1,5 @@
-﻿using HistoricoMedico.Infrastructure.Persistence;
+﻿using HistoricoMedico.Core.Repositories;
+using HistoricoMedico.Infrastructure.Persistence;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -11,19 +12,19 @@ namespace HistoricoMedico.Application.Commands.AtualizarUsuario
 {
     public class AtualizarUsuarioCommandHandler : IRequestHandler<AtualizarUsuarioCommand, Unit>
     {
-        private readonly HistoricoMedicoDbContext _dbContext;
-        public AtualizarUsuarioCommandHandler(HistoricoMedicoDbContext dbContext)
+        private readonly IUsuarioRepository _usuarioRepository;
+        public AtualizarUsuarioCommandHandler(IUsuarioRepository usuarioRepository)
         {
-            _dbContext = dbContext;
+            _usuarioRepository = usuarioRepository;
         }
 
         public async Task<Unit> Handle(AtualizarUsuarioCommand request, CancellationToken cancellationToken)
         {
-            var usuario = _dbContext.Usuarios.SingleOrDefault(u => u.Id == request.Id);
+            var usuario = await _usuarioRepository.ObterUmUsuario(request.Id);
 
             usuario.Atualizar(request.Email, request.Celular, request.Senha);
 
-            await _dbContext.SaveChangesAsync();
+            await _usuarioRepository.SalvarAlteracoes();
 
             return Unit.Value;
         }

@@ -1,9 +1,5 @@
-﻿using HistoricoMedico.Infrastructure.Persistence;
+﻿using HistoricoMedico.Core.Repositories;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,19 +7,19 @@ namespace HistoricoMedico.Application.Commands.AtualizarConsulta
 {
     public class AtualizarConsultaCommandHandler : IRequestHandler<AtualizarConsultaCommand, Unit>
     {
-        private readonly HistoricoMedicoDbContext _dbContext;
-        public AtualizarConsultaCommandHandler(HistoricoMedicoDbContext dbContext)
+        private readonly IConsultaRepository _consultaRepository;
+        public AtualizarConsultaCommandHandler(IConsultaRepository consultaRepository)
         {
-            _dbContext = dbContext;
+            _consultaRepository = consultaRepository;
         }
 
         public async Task<Unit> Handle(AtualizarConsultaCommand request, CancellationToken cancellationToken)
         {
-            var consulta = _dbContext.Consultas.SingleOrDefault(c => c.Id == request.Id);
+            var consulta = await _consultaRepository.ObterUmaConsulta(request.Id);
 
             consulta.Atualizar(request.Sintomas, request.PrescricaoMedica, request.Observacoes, request.Conclusoes, request.DataConsulta);
 
-            await _dbContext.SaveChangesAsync();
+            await _consultaRepository.SalvarAlteracoes();
 
             return Unit.Value;
         }

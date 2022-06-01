@@ -1,4 +1,5 @@
 ﻿using HistoricoMedico.Core.Entities;
+using HistoricoMedico.Core.Repositories;
 using HistoricoMedico.Infrastructure.Persistence;
 using MediatR;
 using System;
@@ -13,18 +14,17 @@ namespace HistoricoMedico.Application.Commands.CriarDependente
     public class CriarDependenteCommandHandler : IRequestHandler<CriarDependenteCommand, int>
     {
 
-        private readonly HistoricoMedicoDbContext _dbContext;
-        public CriarDependenteCommandHandler(HistoricoMedicoDbContext dbContext)
+        private readonly IDependenteRepository _dependenteRepository;
+        public CriarDependenteCommandHandler(IDependenteRepository dependenteRepository)
         {
-            _dbContext = dbContext;
+            _dependenteRepository = dependenteRepository;
         }
 
         public async Task<int> Handle(CriarDependenteCommand request, CancellationToken cancellationToken)
         {
             var dependente = new Dependente(request.Nome, request.IdUsuario, request.Sexo, request.DataNascimento, request.Parentesco);
 
-            await _dbContext.Dependentes.AddAsync(dependente);
-            await _dbContext.SaveChangesAsync();
+            await _dependenteRepository.Criar(dependente);  
 
             return dependente.Id;
         }

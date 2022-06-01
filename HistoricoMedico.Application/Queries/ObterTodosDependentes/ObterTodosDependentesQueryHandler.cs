@@ -1,4 +1,5 @@
-﻿using HistoricoMedico.Infrastructure.Persistence;
+﻿using HistoricoMedico.Core.Repositories;
+using HistoricoMedico.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -10,18 +11,19 @@ namespace HistoricoMedico.Application.Queries.ObterTodosDependentes
 {
     public class ObterTodosDependentesQueryHandler : IRequestHandler<ObterTodosDependentesQuery, List<DependenteViewModel>>
     {
-        private readonly HistoricoMedicoDbContext _dbContext;
-        public ObterTodosDependentesQueryHandler(HistoricoMedicoDbContext dbContext)
+        private readonly IDependenteRepository _dependenteRepository;
+        public ObterTodosDependentesQueryHandler(IDependenteRepository dependenteRepository)
         {
-            _dbContext = dbContext;
+            _dependenteRepository = dependenteRepository;
         }
 
         public async Task<List<DependenteViewModel>> Handle(ObterTodosDependentesQuery request, CancellationToken cancellationToken)
         {
-            var dependentes = _dbContext.Dependentes;
-            var dependentesViewModel = await dependentes
+            var dependentes = await _dependenteRepository.ObterTodos();
+
+            var dependentesViewModel =  dependentes
                 .Select(d => new DependenteViewModel(d.Id, d.Nome, d.DataNascimento, d.Parentesco))
-                .ToListAsync();
+                .ToList();
 
             return dependentesViewModel;
         }

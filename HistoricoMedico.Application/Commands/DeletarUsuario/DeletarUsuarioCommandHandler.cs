@@ -1,4 +1,5 @@
-﻿using HistoricoMedico.Infrastructure.Persistence;
+﻿using HistoricoMedico.Core.Repositories;
+using HistoricoMedico.Infrastructure.Persistence;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -11,18 +12,16 @@ namespace HistoricoMedico.Application.Commands.DeletarUsuario
 {
     public class DeletarUsuarioCommandHandler : IRequestHandler<DeletarUsuarioCommand, Unit>
     {
-        private readonly HistoricoMedicoDbContext _dbContext;
-        public DeletarUsuarioCommandHandler(HistoricoMedicoDbContext dbContext)
+        private readonly IUsuarioRepository _usuarioRepository;
+        public DeletarUsuarioCommandHandler(IUsuarioRepository usuarioRepository)
         {
-            _dbContext = dbContext;
+            _usuarioRepository = usuarioRepository;
         }
         public async Task<Unit> Handle(DeletarUsuarioCommand request, CancellationToken cancellationToken)
         {
-            var usuario = _dbContext.Usuarios.SingleOrDefault(u => u.Id == request.Id);
+            var usuario = await _usuarioRepository.ObterUmUsuario(request.Id);            
 
-            _dbContext.Usuarios.Remove(usuario);
-
-            await _dbContext.SaveChangesAsync();
+            await _usuarioRepository.Deletar(usuario);
 
             return Unit.Value;
         }

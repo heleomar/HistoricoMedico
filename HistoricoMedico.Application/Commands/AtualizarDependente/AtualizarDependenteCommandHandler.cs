@@ -1,4 +1,5 @@
-﻿using HistoricoMedico.Infrastructure.Persistence;
+﻿using HistoricoMedico.Core.Repositories;
+using HistoricoMedico.Infrastructure.Persistence;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -12,19 +13,20 @@ namespace HistoricoMedico.Application.Commands.AtualizarDependente
     public class AtualizarDependenteCommandHandler : IRequestHandler<AtualizarDependenteCommand, Unit>
     {
 
-        private readonly HistoricoMedicoDbContext _dbContext;
-
-        public AtualizarDependenteCommandHandler(HistoricoMedicoDbContext dbContext)
+        private readonly IDependenteRepository _dependenteRepository;
+        public AtualizarDependenteCommandHandler(IDependenteRepository dependenteRepository)
         {
-            _dbContext = dbContext;
+            _dependenteRepository = dependenteRepository;
         }
+
+
         public async Task<Unit> Handle(AtualizarDependenteCommand request, CancellationToken cancellationToken)
         {
-            var dependente = _dbContext.Dependentes.SingleOrDefault(d => d.Id == request.Id);
+            var dependente = await _dependenteRepository.ObterUmDependente(request.Id);
 
             dependente.Atualizar(request.Nome, request.Parentesco);
 
-            await _dbContext.SaveChangesAsync();
+            await _dependenteRepository.SalvarAlteracoes();
 
             return Unit.Value;
         }

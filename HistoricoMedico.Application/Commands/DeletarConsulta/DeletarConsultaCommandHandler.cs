@@ -1,4 +1,5 @@
-﻿using HistoricoMedico.Infrastructure.Persistence;
+﻿using HistoricoMedico.Core.Repositories;
+using HistoricoMedico.Infrastructure.Persistence;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -12,19 +13,17 @@ namespace HistoricoMedico.Application.Commands.DeletarConsulta
     internal class DeletarConsultaCommandHandler : IRequestHandler<DeletarConsultaCommand, Unit>
     {
 
-        private readonly HistoricoMedicoDbContext _dbContext;
-        public DeletarConsultaCommandHandler(HistoricoMedicoDbContext dbContext)
+        private readonly IConsultaRepository _consultaRepository;
+        public DeletarConsultaCommandHandler(IConsultaRepository consultaRepository)
         {
-            _dbContext = dbContext;
+            _consultaRepository = consultaRepository;
         }
 
         public async Task<Unit> Handle(DeletarConsultaCommand request, CancellationToken cancellationToken)
         {
-            var consulta = _dbContext.Consultas.SingleOrDefault(p => p.Id == request.Id);
+            var consulta = await _consultaRepository.ObterUmaConsulta(request.Id);
 
-            _dbContext.Consultas.Remove(consulta);
-
-            await _dbContext.SaveChangesAsync();
+            await _consultaRepository.Deletar(consulta);
 
             return Unit.Value;
         }
