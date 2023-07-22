@@ -7,7 +7,7 @@ Nesse projeto, estou empregando as melhores práticas de desenvolvimento, utiliz
 
 A aplicação também adotará o padrão de separação de responsabilidades ``CQRS (Command Query Responsibility Segregation)``, permitindo que as operações de leitura e escrita sejam tratadas de forma independente. Isso resultará em melhor desempenho, escalabilidade e gerenciamento dos dados ao longo do tempo.
 
-Estou sempre aberto a sugestões e feedbacks para aprimorar ainda mais este projeto e contribuir para a comunidade de desenvolvedores. Juntos, podemos construir algo realmente significativo!
+Estou sempre aberto a sugestões e feedbacks para aprimorar ainda mais este projeto e contribuir para a comunidade de desenvolvedores.
 
 ## Contato
 
