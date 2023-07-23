@@ -6,6 +6,7 @@ using HistoricoMedico.Application.Queries.ObterTodasConsultas;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace HistoricoMedico.API.Controllers
@@ -48,11 +49,6 @@ namespace HistoricoMedico.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CadastrarConsulta([FromBody] CriarConsultaCommand  command)
         {
-            if (command.DataConsulta < DateTime.Now)
-            {
-                return BadRequest();
-            }
-
             var id = await _mediator.Send(command);
 
             return CreatedAtAction(nameof(ObterConsultaEspecifica), new { id = id }, command);

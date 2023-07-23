@@ -1,3 +1,4 @@
+using FluentValidation.AspNetCore;
 using HistoricoMedico.Application.Commands.CriarConsulta;
 using HistoricoMedico.Core.Repositories;
 using HistoricoMedico.Infrastructure.Persistence;
@@ -23,6 +24,7 @@ namespace HistoricoMedico.API
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
+        [System.Obsolete]
         public void ConfigureServices(IServiceCollection services)
         {
 
@@ -36,7 +38,8 @@ namespace HistoricoMedico.API
             services.AddScoped<IDependenteRepository, DependenteRepository>();
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
-            services.AddControllers();
+            services.AddControllers()
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CriarConsultaCommand>());
 
             services.AddMediatR(typeof(CriarConsultaCommand));
 
