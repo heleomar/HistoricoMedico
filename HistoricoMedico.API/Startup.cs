@@ -1,4 +1,5 @@
 using FluentValidation.AspNetCore;
+using HistoricoMedico.API.Filters;
 using HistoricoMedico.Application.Commands.CriarConsulta;
 using HistoricoMedico.Core.Repositories;
 using HistoricoMedico.Infrastructure.Persistence;
@@ -38,7 +39,7 @@ namespace HistoricoMedico.API
             services.AddScoped<IDependenteRepository, DependenteRepository>();
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
-            services.AddControllers()
+            services.AddControllers(opt => opt.Filters.Add(typeof(ValidationFilter)))
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CriarConsultaCommand>());
 
             services.AddMediatR(typeof(CriarConsultaCommand));
