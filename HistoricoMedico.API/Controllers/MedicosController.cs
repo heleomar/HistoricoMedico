@@ -4,6 +4,7 @@ using HistoricoMedico.Application.Commands.DeletarMedico;
 using HistoricoMedico.Application.Queries.ObterMedico;
 using HistoricoMedico.Application.Queries.ObterTodosMedicos;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 namespace HistoricoMedico.API.Controllers
 {
     [Route("api/medicos")]
+    [Authorize]
     public class MedicosController : ControllerBase
     {
         private readonly IMediator _mediator;

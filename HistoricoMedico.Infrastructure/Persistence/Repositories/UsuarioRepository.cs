@@ -40,6 +40,9 @@ namespace HistoricoMedico.Infrastructure.Persistence.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        
+        public Task<Usuario> ObterUsuarioEmailESenhaAsync(string email, string senhaHash)
+        {
+            return _dbContext.Usuarios.SingleOrDefaultAsync(u => u.Email == email && u.Senha == senhaHash);
+        }
     }
 }

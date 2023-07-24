@@ -4,12 +4,14 @@ using HistoricoMedico.Application.Commands.DeletarDependente;
 using HistoricoMedico.Application.Queries.ObterDependente;
 using HistoricoMedico.Application.Queries.ObterTodosDependentes;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace HistoricoMedico.API.Controllers
 {
     [Route("api/dependentes")]
+    [Authorize]
     public class DependentesController : ControllerBase
     {
         private readonly IMediator _mediator;

@@ -1,14 +1,18 @@
 ﻿using HistoricoMedico.Application.Commands.AtualizarUsuario;
 using HistoricoMedico.Application.Commands.CriarUsuario;
 using HistoricoMedico.Application.Commands.DeletarUsuario;
+using HistoricoMedico.Application.Commands.Login;
 using HistoricoMedico.Application.Queries.ObterUsuario;
+using HistoricoMedico.Application.ViewModels;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace HistoricoMedico.API.Controllers
 {
     [Route("api/usuarios")]
+    [Authorize]
     public class UsuariosController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -72,6 +76,20 @@ namespace HistoricoMedico.API.Controllers
             await  _mediator.Send(command);
 
             return NoContent();
+        }
+
+        [HttpPut("login")]
+        public async Task<IActionResult> Login([FromBody] LoginCommand command)
+        {
+            var loginViewModel = await _mediator.Send(command);
+
+            if(loginViewModel == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(loginViewModel);
+
         }
 
     }

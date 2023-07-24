@@ -8,13 +8,13 @@ namespace HistoricoMedico.Core.Entities
 {
     public class Usuario : BaseEntity
     {
-        public Usuario(string nome, string senha, string email)
+        public Usuario(string nome, string senha, string email, string role)
         {
             Nome = nome;
             Email = email;
             Senha = senha;
             DataCadastro = DateTime.Now;
-
+            Role = role;
         }
         public Usuario(string nome, string senha, string email, string sexo, int celular, DateTime dataNascimento) 
         {
@@ -31,6 +31,7 @@ namespace HistoricoMedico.Core.Entities
         public string Nome { get; private set; }
         public string Email { get; private set; }
         public string Senha { get; private set; }
+        public string Role { get; set; }
         public string Sexo { get; private set; }
         public int Celular { get; private set; }
         public DateTime DataNascimento { get; private set; }        
@@ -47,8 +48,6 @@ namespace HistoricoMedico.Core.Entities
             Email = email;
             Celular = celular;
             Senha = senha;
-
-
 
         }
 

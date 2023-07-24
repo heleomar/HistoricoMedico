@@ -13,6 +13,7 @@ namespace HistoricoMedico.Core.Repositories
         Task Criar(Usuario usuario);
         Task Deletar(Usuario usuario);
         Task SalvarAlteracoes();
+        Task<Usuario> ObterUsuarioEmailESenhaAsync(string emial, string senhaHash);
 
         
     }
